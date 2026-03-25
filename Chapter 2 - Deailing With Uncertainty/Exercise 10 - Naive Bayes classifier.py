@@ -20,21 +20,21 @@ def roll(loaded):
     return sequence
 
 def bayes(sequence):
-    odds = 1.0           # start with odds 1:1
+    odds = 1.0           # start with odds 1:1 (equal prior probability)
     for roll in sequence:
         if roll == 6:
+            # P(6 | loaded) / P(6 | normal) = 0.5 / (1/6) = 3
             r = 0.5 / (1/6)
         else:
+            # P(non-6 | loaded) / P(non-6 | normal) = 0.1 / (1/6) = 0.6
             r = 0.1 / (1/6)
         odds = odds * r
-    if odds > 1:
-        return True
-    else:
-        return False
+    # Return True if odds > 1 (loaded more likely)
+    return odds > 1
 
+# Test with a loaded die
 sequence = roll(True)
 if bayes(sequence):
     print("I think loaded")
 else:
     print("I think normal")
-    np.ndarray(sequence)

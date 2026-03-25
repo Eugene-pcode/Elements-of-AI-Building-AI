@@ -10,7 +10,6 @@ def accept_prob(S_old, S_new, T):
     if S_new > S_old:
         return 1.0
     else:   
-    #return 0.0
         return np.exp(-(S_old - S_new) / T)
 
 # the above function will be used as follows. this is shown just for
@@ -20,4 +19,5 @@ def accept(S_old, S_new, T):
         print(True)
     else:
         print(False)
+
 accept(150, 140, 5)

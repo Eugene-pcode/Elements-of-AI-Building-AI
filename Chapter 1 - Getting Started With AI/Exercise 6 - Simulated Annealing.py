@@ -24,23 +24,34 @@ def main():
     global y
 
     for step in range(steps):
-        # add a temperature schedule here
-        T = max(0, ((steps - step)/steps)**3-.005)
+        # temperature schedule: starts high, decreases to 0
+        T = max(0, ((steps - step)/steps)**3 - 0.005)
+        
         # update solutions on each search track                                     
         for i in range(tracks):
             
-            # try a new solution near the current one                               
+            # try a new solution near the current one (within ±2 steps)                               
             x_new = np.random.randint(max(0, x[i]-2), min(N, x[i]+2+1))
             y_new = np.random.randint(max(0, y[i]-2), min(N, y[i]+2+1))
             S_old = h[x[i], y[i]]
             S_new = h[x_new, y_new]
 
-            # change this to use simulated annealing
+            # simulated annealing acceptance rule
             if S_new > S_old:
-                x[i], y[i] = x_new, y_new   # new solution is better, go there       
+                # always accept better solutions
+                x[i], y[i] = x_new, y_new
             else:
-                if random.random() < (np.exp(-(S_old - S_new) / T)):                     # if the new solution is worse, do nothing
-                   x[i], y[i] = x_new, y_new  
-    # Number of tracks found the peak
-    print(sum([x[j] == peak_x and y[j] == peak_y for j in range(tracks)])) 
-main()
+                # only consider worse solutions if T > 0
+                if T > 0:
+                    # accept worse solutions with probability exp(-ΔE / T)
+                    if random.random() < np.exp(-(S_old - S_new) / T):
+                        x[i], y[i] = x_new, y_new
+                # if T == 0, do nothing (greedy behavior)
+            
+    # count how many tracks found the global peak
+    found_peak = sum([x[j] == peak_x and y[j] == peak_y for j in range(tracks)])
+    print(f"Tracks that found the global peak: {found_peak} out of {tracks}")
+    return found_peak
+
+# run the simulation
+result = main()

@@ -4,12 +4,11 @@ def main():
     prob = random.random()
     if prob < 0.1:
         favourite = "bats"
-    if prob < 0.2 and prob > 0.1:
+    elif prob < 0.2:  # 0.1 <= prob < 0.2
         favourite = "cats"
-    if prob > 0.2:
+    else:  # prob >= 0.2
         favourite = "dogs"
-      # change this
-    print("I love " + favourite) 
-
+    # change this - now fixed with proper probability distribution
+    print("I love " + favourite)
 
 main()

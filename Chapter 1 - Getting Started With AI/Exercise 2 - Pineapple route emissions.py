@@ -20,36 +20,32 @@ co2 = 0.020
 
 # DATA BLOCK ENDS
 
-# these variables are initialised to nonsensical values
-# your program should determine the correct values for them
-
-
 def permutations(route, ports):
     global smallest, bestroute
-    # write the recursive function here
-    # remember to calculate the emissions of the route as the recursion ends
-    # and keep track of the route with the lowest emissions
+    
     if len(ports) < 1:
-        shortest = 1000000
-        count = D[0][route[1]]
-        count += D[route[1]][route[2]]
-        count += D[route[2]][route[3]]
-        count += D[route[3]][route[4]]
-        if count < smallest:
-            smallest = count
-            bestroute = route
+        # Calculate total distance for this complete route
+        total_distance = 0
+        for i in range(len(route) - 1):
+            total_distance += D[route[i]][route[i + 1]]
+        
+        # Check if this route is shorter than the best found so far
+        if total_distance < smallest:
+            smallest = total_distance
+            bestroute = route.copy()
     else:
         for i in range(len(ports)):
-            permutations(route+[ports[i]], ports[:i]+ports[i+1:])
-
-    pass
+            permutations(route + [ports[i]], ports[:i] + ports[i+1:])
 
 def main():
     global smallest
-    # this will start the recursion 
-    permutations([0], list(range(1, len(portnames))))
-    smallest = smallest*co2
-    # print the best route and its emissions
-    print(' '.join([portnames[i] for i in bestroute]) + " %.1f kg" % smallest)
+    # Start from Helsinki (index 4) and visit all other ports
+    permutations([4], list(range(4)))  # ports 0,1,2,3 are PAN, AMS, CAS, NYC
+    
+    # Calculate CO₂ emissions from the shortest distance
+    emissions = smallest * co2
+    
+    # Print the best route and its emissions
+    print(' '.join([portnames[i] for i in bestroute]) + " %.1f kg" % emissions)
 
 main()

@@ -11,23 +11,24 @@ input_string = '''
 '''
 
 np.set_printoptions(precision=1)    # this just changes the output settings for easier reading
- 
+
 def fit_model(input_file):
-
+    # Read all data
     data = np.genfromtxt(input_file, skip_header=1)
-    c = np.asarray([])
-    x = np.asarray([])
-    y = np.asarray([])
-
-    i = len(data) - 1
-    while i >= 0:
-        last_element = data[i][-1]
-        y = np.insert(y, 0, last_element, axis = 0)
-        i-=1
-    c = data[:,:-1]
-    new = np.linalg.lstsq(c, y)[0]
-    print(new)
-    print(c @ new)
+    
+    # Extract features (all columns except last) and target (last column)
+    X = data[:, :-1]  # features
+    y = data[:, -1]   # target prices
+    
+    # Solve least squares: find coefficients that minimize ||Xc - y||^2
+    coefficients = np.linalg.lstsq(X, y, rcond=None)[0]
+    
+    # Print the coefficients
+    print(coefficients)
+    
+    # Print predictions for the training data
+    predictions = X @ coefficients
+    print(predictions)
 
 # simulate reading a file
 input_file = StringIO(input_string)

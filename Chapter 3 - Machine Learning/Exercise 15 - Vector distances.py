@@ -1,32 +1,39 @@
 import numpy as np
+from io import StringIO
 
-x_train = np.random.rand(10, 3)   # generate 10 random vectors of dimension 3
-x_test = np.random.rand(3)        # generate one more random vector of the same dimension
+train_string = '''
+25 2 50 1 500 127900
+39 3 10 1 1000 222100
+13 2 13 1 1000 143750
+82 5 20 2 120 268000
+130 6 10 2 600 460700
+115 6 10 1 550 407000
+'''
 
-def dist(a, b):
-    sum = 0
-    for ai, bi in zip(a, b):
-        sum = sum + (ai - bi)**2
-    return np.sqrt(sum)
-    
-def nearest(x_train, x_test):
-    nearest = 0
-    min_distance = np.Inf
-    x = 0
-    min_distance = dist(x_test, x_train[0])
-    for i in x_train:
-        distance = dist(i, x_test)
-        if distance < 0:
-            abs(distance)
-        if min_distance > distance:
-            min_distance = distance
-            nearest = x
-        x+=1
-            
-    
-    # add a loop here that goes through all the vectors in x_train and finds the one that
-    # is nearest to x_test. return the index (between 0, ..., len(x_train)-1) of the nearest
-    # neighbor
-    print(nearest)
+test_string = '''
+36 3 15 1 850 196000
+75 5 18 2 540 290000
+'''
 
-nearest(x_train, x_test)
+def main():
+    np.set_printoptions(precision=1)
+
+    # Use StringIO to treat strings as file-like objects
+    data_train = np.genfromtxt(StringIO(train_string), skip_header=1)
+    data_test = np.genfromtxt(StringIO(test_string), skip_header=1)
+
+    # Extract features (all columns except last)
+    x_train = data_train[:, :-1]
+    y_train = data_train[:, -1]
+
+    # Extract test features
+    x_test = data_test[:, :-1]
+
+    # Solve least squares to find coefficients
+    coeff = np.linalg.lstsq(x_train, y_train, rcond=None)[0]
+
+    # Print coefficients and test predictions
+    print(coeff)
+    print(x_test @ coeff)
+
+main()

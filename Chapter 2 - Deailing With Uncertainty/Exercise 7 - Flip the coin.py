@@ -1,22 +1,20 @@
-import numpy as np
+import random
 
-def generate(p1):
-    # change this so that it generates 10000 random zeros and ones
-    # where the probability of one is p1
-    seq = np.random.choice([0,1],p=[1-p1, p1], size=9996)
-    return seq
+def flip_coin():
+    if random.random() < 0.5:
+        return "HEADS"
+    else:
+        return "TAILS"
 
-def count(seq):
-    amount = 0
-    i = 0
-    while i < len(seq):
-        if seq[i:i+5].all():
-            amount += 1
-        i += 1
-    return amount
+heads = 0
+tails = 0
 
-def main(p1):
-    seq = generate(p1)
-    return count(seq)
+for i in range(100):
+    result = flip_coin()
+    if result == "HEADS":
+        heads += 1
+    else:
+        tails += 1
 
-print(main(2/3))
+print("HEADS", heads)
+print("TAILS", tails)
